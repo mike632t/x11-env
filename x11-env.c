@@ -30,6 +30,8 @@
  * Compile and link with 'gcc x11-env.c -o x11-env -lX11'
  *
  * 11 Feb 24   0.1   - Initial version - MT
+ *                   - List the environment vairables on the console before
+ *                     drawing the window - MT
  *
  */
 
@@ -90,6 +92,13 @@ int main(int argc, char *argv[])
 
       h_font = XQueryFont(h_display, XGContextFromGC(DefaultGC(h_display, i_screen))); /* Get the default font properties */
 
+      i_size = (int)(sizeof(s_names)/sizeof(s_names[0])); /* Get number of environment vairables in the list */
+
+      for (i_count = 0; i_count < i_size; i_count++) /* List the them on the console */
+      {
+         fprintf(stdout, "%s = %s\n", s_names[i_count], getenv(s_names[i_count])); 
+      }
+
       while (1) /* Main program event loop */
       {
          XNextEvent(h_display, &x_event); /* Wait until the next event */
@@ -104,13 +113,10 @@ int main(int argc, char *argv[])
                &i_window_border,
                &i_colour_depth);
 
-            i_size = (int)(sizeof(s_names)/sizeof(s_names[0])); /* Get number of environment vairables in the list */
-            
             /* Display the environment vairables in the window and on stdout */
             i_position = h_font->ascent + i_window_border;
             for (i_count = 0; i_count < i_size; i_count++)
             {
-               fprintf(stdout, "%s = %s\n", s_names[i_count], getenv(s_names[i_count])); 
                i_offset = i_window_border;
                
                s_text = (char *) s_names[i_count];
